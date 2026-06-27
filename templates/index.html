@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <span class="material-icons-outlined logo-icon">school</span>
+            <h2 class="logo-title">EduAdmin</h2>
+            <span class="material-icons-outlined menu-toggle" id="menuToggle">menu</span>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="active" onclick="showDashboard()"><span class="material-icons-outlined">dashboard</span> <span class="menu-text">Dashboard</span></li>
+            <li onclick="showStudents()"><span class="material-icons-outlined">people</span> <span class="menu-text">Students</span></li>
+            <li onclick="openAddStudentModal()"><span class="material-icons-outlined">person_add</span> <span class="menu-text">Add Student</span></li>
+            <li><span class="material-icons-outlined">settings</span> <span class="menu-text">Settings</span></li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Navbar -->
+        <header class="top-navbar">
+            <div class="navbar-left">
+                <span class="material-icons-outlined mobile-menu" id="mobileMenuToggle">menu</span>
+                <h1 class="page-title">Student Management System</h1>
+            </div>
+            <div class="navbar-right">
+                <div class="search-bar">
+                    <span class="material-icons-outlined">search</span>
+                    <input type="text" id="searchInput" placeholder="Search by Name, Email, Course...">
+                </div>
+                <div class="nav-icons">
+                    <span class="material-icons-outlined notification-icon">notifications</span>
+                    <div class="profile-avatar">
+                        <img src="https://ui-avatars.com/api/?name=Admin&background=2563EB&color=fff" alt="Admin">
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Loading Spinner -->
+        <div id="loadingOverlay" class="loading-overlay hidden">
+            <div class="spinner"></div>
+        </div>
+
+        <div class="content-area">
+            <!-- Dashboard View -->
+            <div id="dashboardView">
+                <div class="stats-cards">
+                    <div class="card stat-card">
+                        <div class="stat-icon" style="background: #e0e7ff; color: #2563eb;">
+                            <span class="material-icons-outlined">people</span>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Total Students</h3>
+                            <p id="totalStudentsCount">0</p>
+                        </div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-icon" style="background: #dcfce7; color: #16a34a;">
+                            <span class="material-icons-outlined">library_books</span>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Total Courses</h3>
+                            <p id="totalCoursesCount">0</p>
+                        </div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-icon" style="background: #fef9c3; color: #ca8a04;">
+                            <span class="material-icons-outlined">cake</span>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Average Age</h3>
+                            <p id="avgAgeCount">0</p>
+                        </div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-icon" style="background: #ffedd5; color: #ea580c;">
+                            <span class="material-icons-outlined">person_add</span>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Recently Added</h3>
+                            <p id="recentlyAddedCount">0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Students List View -->
+            <div id="studentsView" class="card table-card">
+                <div class="table-header">
+                    <h2>Student List</h2>
+                    <button class="btn btn-primary ripple" onclick="openAddStudentModal()">
+                        <span class="material-icons-outlined">add</span> Add Student
+                    </button>
+                </div>
+                
+                <div id="emptyState" class="empty-state hidden">
+                    <span class="material-icons-outlined empty-icon">group_off</span>
+                    <h3>No Students Found</h3>
+                    <p>Get started by adding a new student to the system.</p>
+                    <button class="btn btn-primary ripple" onclick="openAddStudentModal()">Add Student</button>
+                </div>
+
+                <div class="table-responsive" id="tableContainer">
+                    <table class="student-table" id="studentTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Course</th>
+                                <th>Age</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentTableBody">
+                            <!-- Rows dynamically populated -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Student Modal (Add/Edit) -->
+    <div id="studentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add Student</h2>
+                <span class="material-icons-outlined close-modal" onclick="closeStudentModal()">close</span>
+            </div>
+            <form id="studentForm">
+                <input type="hidden" id="studentId">
+                <div class="form-group">
+                    <label for="name">Student Name</label>
+                    <input type="text" id="name" required placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required placeholder="john@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="course">Course</label>
+                    <input type="text" id="course" required placeholder="Computer Science">
+                </div>
+                <div class="form-group">
+                    <label for="age">Age</label>
+                    <input type="number" id="age" required min="1" placeholder="20">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary ripple" onclick="closeStudentModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary ripple" id="saveBtn">Save Student</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content modal-sm">
+            <div class="modal-header">
+                <h2>Confirm Delete</h2>
+                <span class="material-icons-outlined close-modal" onclick="closeDeleteModal()">close</span>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this student?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary ripple" onclick="closeDeleteModal()">Cancel</button>
+                <button class="btn btn-danger ripple" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
