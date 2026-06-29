@@ -33,6 +33,14 @@ Open your web browser and navigate to:
 http://127.0.0.1:8000
 ```
 
+## 🌐 Live Demo
+
+**Application:**  
+https://student-crud-fastapi-5.onrender.com
+
+**API Documentation (Swagger UI):**  
+https://student-crud-fastapi-5.onrender.com/docs
+
 ## API Endpoints
 
 - `GET /`: Returns the frontend HTML page.
